@@ -676,26 +676,6 @@ def create_skincare_knowledge_base() -> IngredientKnowledgeGraph:
         beginner_friendly=True,
         max_concentration="10% OTC, 15-20% prescription"
     ))
-
-    # ========== TEA TREE OIL ==========
-    kg.add_ingredient(Ingredient(
-        id="tea_tree",
-        name="Tea Tree Oil",
-        category=IngredientCategory.OIL,
-        aliases=["melaleuca", "tea tree"],
-        water_soluble=False,
-        time_of_day=TimeOfDay.PM_ONLY,  # Can be photosensitizing
-        application_order=5,
-        addresses_concerns=[SkinConcern.ACNE],
-        caution_skin_types=[SkinType.SENSITIVE, SkinType.DRY],
-        description="Natural antibacterial, good for spot treatment.",
-        how_it_works="Contains terpinen-4-ol which kills acne bacteria.",
-        usage_tips=[
-            "Always dilute - never use pure on skin",
-            "Best as spot treatment",
-        ],
-        beginner_friendly=True
-    ))    
     
     # ========== PEPTIDES ==========
     kg.add_ingredient(Ingredient(
@@ -763,6 +743,520 @@ def create_skincare_knowledge_base() -> IngredientKnowledgeGraph:
             "Reapply every 2 hours when exposed to sun"
         ],
         beginner_friendly=True
+    ))
+    
+    # ========== SQUALANE ==========
+    kg.add_ingredient(Ingredient(
+        id="squalane",
+        name="Squalane",
+        category=IngredientCategory.OIL,
+        aliases=["squalene", "olive squalane", "sugarcane squalane"],
+        water_soluble=False,
+        time_of_day=TimeOfDay.AM_AND_PM,
+        application_order=8,
+        addresses_concerns=[
+            SkinConcern.DRYNESS, SkinConcern.AGING, SkinConcern.SENSITIVITY
+        ],
+        caution_skin_types=[],
+        description="Lightweight oil that mimics skin's natural sebum. Non-comedogenic.",
+        how_it_works="Identical to squalene naturally produced by skin, so it absorbs easily and reinforces the lipid barrier.",
+        usage_tips=[
+            "Can be mixed with moisturizer or applied alone",
+            "Great for sealing in hydration after water-based serums",
+            "Safe for acne-prone skin despite being an oil"
+        ],
+        beginner_friendly=True
+    ))
+    
+    # ========== TRANEXAMIC ACID ==========
+    kg.add_ingredient(Ingredient(
+        id="tranexamic_acid",
+        name="Tranexamic Acid",
+        category=IngredientCategory.OTHER,
+        aliases=["txa", "tranexamic"],
+        optimal_ph=(4.5, 6.5),
+        water_soluble=True,
+        time_of_day=TimeOfDay.AM_AND_PM,
+        application_order=4,
+        addresses_concerns=[
+            SkinConcern.HYPERPIGMENTATION, SkinConcern.REDNESS, SkinConcern.DULLNESS
+        ],
+        caution_skin_types=[],
+        description="Brightening ingredient that targets stubborn pigmentation and melasma.",
+        how_it_works="Interrupts the pathway between UV exposure and melanin production. Also reduces redness.",
+        usage_tips=[
+            "Pairs well with vitamin C and niacinamide",
+            "Safe for long-term use",
+            "Particularly effective for melasma"
+        ],
+        beginner_friendly=True
+    ))
+    
+    # ========== ALPHA ARBUTIN ==========
+    kg.add_ingredient(Ingredient(
+        id="alpha_arbutin",
+        name="Alpha Arbutin",
+        category=IngredientCategory.OTHER,
+        aliases=["arbutin", "α-arbutin"],
+        optimal_ph=(3.5, 6.5),
+        water_soluble=True,
+        time_of_day=TimeOfDay.AM_AND_PM,
+        application_order=4,
+        addresses_concerns=[
+            SkinConcern.HYPERPIGMENTATION, SkinConcern.DULLNESS
+        ],
+        caution_skin_types=[],
+        description="Gentle brightening agent derived from bearberry. Safer alternative to hydroquinone.",
+        how_it_works="Inhibits tyrosinase enzyme, reducing melanin production without irritation.",
+        usage_tips=[
+            "Works best at 1-2% concentration",
+            "Synergizes with vitamin C",
+            "Results visible after 2-3 months of consistent use"
+        ],
+        beginner_friendly=True
+    ))
+    
+    # ========== CENTELLA ASIATICA ==========
+    kg.add_ingredient(Ingredient(
+        id="centella",
+        name="Centella Asiatica",
+        category=IngredientCategory.OTHER,
+        aliases=["cica", "tiger grass", "gotu kola", "madecassoside", "asiaticoside"],
+        water_soluble=True,
+        time_of_day=TimeOfDay.AM_AND_PM,
+        application_order=5,
+        addresses_concerns=[
+            SkinConcern.SENSITIVITY, SkinConcern.REDNESS, SkinConcern.ACNE, SkinConcern.AGING
+        ],
+        caution_skin_types=[],
+        description="Calming, healing ingredient popular in K-beauty. Great for damaged skin barrier.",
+        how_it_works="Contains madecassoside and asiaticoside that promote collagen synthesis and wound healing.",
+        usage_tips=[
+            "Excellent for post-procedure recovery",
+            "Pairs well with almost everything",
+            "Look for products with multiple centella compounds"
+        ],
+        beginner_friendly=True
+    ))
+    
+    # ========== BAKUCHIOL ==========
+    kg.add_ingredient(Ingredient(
+        id="bakuchiol",
+        name="Bakuchiol",
+        category=IngredientCategory.OTHER,
+        aliases=["natural retinol alternative"],
+        water_soluble=False,
+        time_of_day=TimeOfDay.AM_AND_PM,
+        application_order=6,
+        addresses_concerns=[
+            SkinConcern.AGING, SkinConcern.TEXTURE, SkinConcern.HYPERPIGMENTATION
+        ],
+        caution_skin_types=[],
+        description="Plant-based retinol alternative. Same benefits without irritation or sun sensitivity.",
+        how_it_works="Activates similar genes as retinol, stimulating collagen production and cell turnover.",
+        usage_tips=[
+            "Can be used during pregnancy (unlike retinol)",
+            "Safe to use in AM without sun sensitivity",
+            "Can be combined with retinol for enhanced effects"
+        ],
+        beginner_friendly=True
+    ))
+    
+    # ========== TEA TREE OIL ==========
+    kg.add_ingredient(Ingredient(
+        id="tea_tree",
+        name="Tea Tree Oil",
+        category=IngredientCategory.OIL,
+        aliases=["melaleuca", "tea tree", "melaleuca alternifolia"],
+        water_soluble=False,
+        time_of_day=TimeOfDay.PM_ONLY,
+        application_order=5,
+        addresses_concerns=[SkinConcern.ACNE, SkinConcern.OILINESS],
+        caution_skin_types=[SkinType.SENSITIVE, SkinType.DRY],
+        description="Natural antibacterial oil effective for acne spot treatment.",
+        how_it_works="Contains terpinen-4-ol which has antimicrobial properties that kill acne-causing bacteria.",
+        usage_tips=[
+            "Never use undiluted - always at 5% or less concentration",
+            "Best as spot treatment, not all-over",
+            "Can be drying - follow with moisturizer"
+        ],
+        beginner_friendly=True,
+        max_concentration="5% max for leave-on products"
+    ))
+    
+    # ========== KOJIC ACID ==========
+    kg.add_ingredient(Ingredient(
+        id="kojic_acid",
+        name="Kojic Acid",
+        category=IngredientCategory.OTHER,
+        aliases=["kojic"],
+        optimal_ph=(4.5, 5.5),
+        water_soluble=True,
+        time_of_day=TimeOfDay.PM_ONLY,
+        application_order=4,
+        addresses_concerns=[SkinConcern.HYPERPIGMENTATION, SkinConcern.DULLNESS],
+        caution_skin_types=[SkinType.SENSITIVE],
+        description="Potent brightening agent derived from fungi. Effective for stubborn dark spots.",
+        how_it_works="Inhibits tyrosinase enzyme and chelates copper required for melanin production.",
+        usage_tips=[
+            "Can cause irritation - introduce slowly",
+            "Often combined with other brighteners for enhanced effect",
+            "Unstable in light - use PM only and store properly"
+        ],
+        beginner_friendly=False,
+        max_concentration="1-4% in most products"
+    ))
+    
+    # ========== MANDELIC ACID ==========
+    kg.add_ingredient(Ingredient(
+        id="mandelic_acid",
+        name="Mandelic Acid",
+        category=IngredientCategory.AHA,
+        aliases=["mandelic"],
+        optimal_ph=(3.0, 4.0),
+        water_soluble=True,
+        time_of_day=TimeOfDay.PM_ONLY,
+        application_order=4,
+        addresses_concerns=[
+            SkinConcern.TEXTURE, SkinConcern.ACNE, 
+            SkinConcern.HYPERPIGMENTATION, SkinConcern.AGING
+        ],
+        caution_skin_types=[],
+        description="Gentlest AHA due to large molecule size. Great for sensitive skin and darker skin tones.",
+        how_it_works="Larger molecule penetrates slowly and evenly, reducing irritation risk while still exfoliating.",
+        usage_tips=[
+            "Best AHA for sensitive skin and beginners",
+            "Safe for darker skin tones - lower risk of post-inflammatory hyperpigmentation",
+            "Also has antibacterial properties for acne"
+        ],
+        beginner_friendly=True,
+        max_concentration="Up to 10% for regular use"
+    ))
+    
+    # ========== PHA (POLYHYDROXY ACIDS) ==========
+    kg.add_ingredient(Ingredient(
+        id="pha",
+        name="PHAs (Polyhydroxy Acids)",
+        category=IngredientCategory.AHA,
+        aliases=["gluconolactone", "lactobionic acid", "polyhydroxy acid"],
+        optimal_ph=(3.5, 4.5),
+        water_soluble=True,
+        time_of_day=TimeOfDay.AM_OR_PM,
+        application_order=4,
+        addresses_concerns=[
+            SkinConcern.TEXTURE, SkinConcern.DRYNESS, 
+            SkinConcern.SENSITIVITY, SkinConcern.AGING
+        ],
+        caution_skin_types=[],
+        description="Gentlest exfoliating acids. Humectant properties make them hydrating while exfoliating.",
+        how_it_works="Largest molecule size of all hydroxy acids. Exfoliate surface only while attracting moisture.",
+        usage_tips=[
+            "Can be used daily by most skin types",
+            "Great alternative if AHAs/BHAs are too irritating",
+            "Antioxidant properties provide additional benefits"
+        ],
+        beginner_friendly=True
+    ))
+    
+    # ========== ZINC ==========
+    kg.add_ingredient(Ingredient(
+        id="zinc",
+        name="Zinc",
+        category=IngredientCategory.OTHER,
+        aliases=["zinc oxide", "zinc pca", "zinc sulfate", "zinc gluconate"],
+        water_soluble=True,
+        time_of_day=TimeOfDay.AM_AND_PM,
+        application_order=5,
+        addresses_concerns=[
+            SkinConcern.ACNE, SkinConcern.OILINESS, 
+            SkinConcern.REDNESS, SkinConcern.SENSITIVITY
+        ],
+        caution_skin_types=[SkinType.DRY],
+        description="Anti-inflammatory mineral that controls oil and soothes irritation.",
+        how_it_works="Regulates sebum production, has antimicrobial properties, and supports wound healing.",
+        usage_tips=[
+            "Zinc oxide in sunscreen provides physical UV protection",
+            "Zinc PCA specifically targets oil control",
+            "Can be drying - pair with hydrating ingredients"
+        ],
+        beginner_friendly=True
+    ))
+    
+    # ========== ROSEHIP OIL ==========
+    kg.add_ingredient(Ingredient(
+        id="rosehip_oil",
+        name="Rosehip Oil",
+        category=IngredientCategory.OIL,
+        aliases=["rosehip seed oil", "rosa canina"],
+        water_soluble=False,
+        time_of_day=TimeOfDay.PM_ONLY,
+        application_order=9,
+        addresses_concerns=[
+            SkinConcern.AGING, SkinConcern.HYPERPIGMENTATION, 
+            SkinConcern.DRYNESS, SkinConcern.TEXTURE
+        ],
+        caution_skin_types=[SkinType.OILY],
+        description="Nutrient-rich oil high in vitamin A and essential fatty acids.",
+        how_it_works="Contains natural retinoids (trans-retinoic acid) and linoleic acid for regeneration.",
+        usage_tips=[
+            "Best used at night as final step",
+            "Can oxidize - store in dark, cool place",
+            "A little goes a long way - 2-3 drops is enough"
+        ],
+        beginner_friendly=True
+    ))
+    
+    # ========== VITAMIN E ==========
+    kg.add_ingredient(Ingredient(
+        id="vitamin_e",
+        name="Vitamin E",
+        category=IngredientCategory.OTHER,
+        aliases=["tocopherol", "tocopheryl acetate", "alpha-tocopherol"],
+        water_soluble=False,
+        time_of_day=TimeOfDay.AM_AND_PM,
+        application_order=6,
+        addresses_concerns=[
+            SkinConcern.DRYNESS, SkinConcern.AGING, SkinConcern.SENSITIVITY
+        ],
+        caution_skin_types=[SkinType.OILY],
+        description="Antioxidant that protects skin from free radicals and supports barrier function.",
+        how_it_works="Neutralizes free radicals from UV and pollution. Enhances moisturizer effectiveness.",
+        usage_tips=[
+            "Works synergistically with vitamin C - stabilizes it",
+            "Can be comedogenic for some - patch test first",
+            "Often found in moisturizers and sunscreens"
+        ],
+        beginner_friendly=True
+    ))
+    
+    # ========== ALLANTOIN ==========
+    kg.add_ingredient(Ingredient(
+        id="allantoin",
+        name="Allantoin",
+        category=IngredientCategory.OTHER,
+        aliases=[],
+        water_soluble=True,
+        time_of_day=TimeOfDay.AM_AND_PM,
+        application_order=5,
+        addresses_concerns=[
+            SkinConcern.SENSITIVITY, SkinConcern.DRYNESS, 
+            SkinConcern.REDNESS, SkinConcern.TEXTURE
+        ],
+        caution_skin_types=[],
+        description="Ultra-gentle soothing ingredient that promotes skin healing.",
+        how_it_works="Stimulates cell proliferation and has keratolytic properties for gentle exfoliation.",
+        usage_tips=[
+            "Found in many sensitive skin products",
+            "Safe for all skin types including babies",
+            "Helps other ingredients penetrate better"
+        ],
+        beginner_friendly=True
+    ))
+    
+    # ========== NEW INGREDIENT INTERACTIONS ==========
+    
+    # Tea tree interactions
+    kg.add_interaction(Interaction(
+        ingredient_a="tea_tree",
+        ingredient_b="benzoyl_peroxide",
+        interaction_type=InteractionType.CAUTION,
+        severity=6,
+        explanation="Both are antibacterial and drying. Using together may over-dry and irritate skin.",
+        recommendation="Choose one or the other for acne treatment, not both."
+    ))
+    
+    kg.add_interaction(Interaction(
+        ingredient_a="tea_tree",
+        ingredient_b="retinol",
+        interaction_type=InteractionType.CAUTION,
+        severity=5,
+        explanation="Both can be irritating. Tea tree's essential oils may increase sensitivity.",
+        recommendation="Use on alternating nights if combining."
+    ))
+    
+    # Kojic acid interactions
+    kg.add_interaction(Interaction(
+        ingredient_a="kojic_acid",
+        ingredient_b="vitamin_c",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="Both target pigmentation through different mechanisms. Enhanced brightening effect.",
+        recommendation="Powerful combination for stubborn dark spots."
+    ))
+    
+    kg.add_interaction(Interaction(
+        ingredient_a="kojic_acid",
+        ingredient_b="retinol",
+        interaction_type=InteractionType.CAUTION,
+        severity=6,
+        explanation="Both can be irritating. Combining may compromise skin barrier.",
+        recommendation="Use on alternate nights, not together."
+    ))
+    
+    # Mandelic acid interactions
+    kg.add_interaction(Interaction(
+        ingredient_a="mandelic_acid",
+        ingredient_b="retinol",
+        interaction_type=InteractionType.CAUTION,
+        severity=5,
+        explanation="Both exfoliate but mandelic is gentler than other AHAs with retinol.",
+        recommendation="More tolerable than glycolic + retinol, but still use caution. Alternate nights recommended."
+    ))
+    
+    kg.add_interaction(Interaction(
+        ingredient_a="mandelic_acid",
+        ingredient_b="niacinamide",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="Niacinamide soothes while mandelic exfoliates gently.",
+        recommendation="Great combination for acne-prone sensitive skin."
+    ))
+    
+    # PHA interactions
+    kg.add_interaction(Interaction(
+        ingredient_a="pha",
+        ingredient_b="retinol",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=2,
+        explanation="PHAs are gentle enough to use with retinol and provide hydration.",
+        recommendation="Safest hydroxy acid to combine with retinol."
+    ))
+    
+    kg.add_interaction(Interaction(
+        ingredient_a="pha",
+        ingredient_b="vitamin_c",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="PHAs work at compatible pH and won't destabilize vitamin C.",
+        recommendation="Can be layered together for brightening and exfoliation."
+    ))
+    
+    # Vitamin E interactions
+    kg.add_interaction(Interaction(
+        ingredient_a="vitamin_e",
+        ingredient_b="vitamin_c",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="Vitamin E stabilizes vitamin C and enhances its antioxidant effects by 4x.",
+        recommendation="Look for products combining both, or layer them."
+    ))
+    
+    kg.add_interaction(Interaction(
+        ingredient_a="vitamin_e",
+        ingredient_b="retinol",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="Vitamin E's antioxidant properties protect skin while retinol works.",
+        recommendation="Apply vitamin E product after retinol to boost moisture and protection."
+    ))
+    
+    # Rosehip oil interactions
+    kg.add_interaction(Interaction(
+        ingredient_a="rosehip_oil",
+        ingredient_b="retinol",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="Rosehip contains natural vitamin A that complements retinol. Also moisturizes.",
+        recommendation="Apply rosehip oil after retinol to buffer irritation."
+    ))
+    
+    # Zinc interactions
+    kg.add_interaction(Interaction(
+        ingredient_a="zinc",
+        ingredient_b="niacinamide",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="Both control oil and reduce inflammation. Common pairing in acne products.",
+        recommendation="Excellent combination for oily, acne-prone skin."
+    ))
+    
+    # Allantoin interactions
+    kg.add_interaction(Interaction(
+        ingredient_a="allantoin",
+        ingredient_b="retinol",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="Allantoin soothes irritation from retinol while promoting healing.",
+        recommendation="Great supporting ingredient in retinol formulations."
+    ))
+    
+    # ========== NEW INTERACTIONS ==========
+    
+    # Squalane synergies
+    kg.add_interaction(Interaction(
+        ingredient_a="squalane",
+        ingredient_b="retinol",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="Squalane buffers retinol's irritation while helping it penetrate. Great for sensitive skin using retinoids.",
+        recommendation="Apply retinol first, then seal with squalane."
+    ))
+    
+    kg.add_interaction(Interaction(
+        ingredient_a="squalane",
+        ingredient_b="hyaluronic_acid",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="HA pulls in moisture, squalane locks it in. Perfect hydration combo.",
+        recommendation="Apply HA to damp skin, follow with squalane."
+    ))
+    
+    # Tranexamic acid synergies
+    kg.add_interaction(Interaction(
+        ingredient_a="tranexamic_acid",
+        ingredient_b="vitamin_c",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="Both target pigmentation through different mechanisms. Enhanced brightening.",
+        recommendation="Excellent combination for hyperpigmentation. Layer vitamin C first."
+    ))
+    
+    kg.add_interaction(Interaction(
+        ingredient_a="tranexamic_acid",
+        ingredient_b="niacinamide",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="Niacinamide inhibits melanosome transfer while TXA blocks melanin production.",
+        recommendation="Powerful brightening duo. Can be used together daily."
+    ))
+    
+    # Alpha arbutin synergies
+    kg.add_interaction(Interaction(
+        ingredient_a="alpha_arbutin",
+        ingredient_b="vitamin_c",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="Target pigmentation via different pathways. Arbutin is gentle enough to pair with actives.",
+        recommendation="Use together in AM routine for maximum brightening."
+    ))
+    
+    # Centella interactions
+    kg.add_interaction(Interaction(
+        ingredient_a="centella",
+        ingredient_b="retinol",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="Centella soothes irritation from retinol while promoting healing.",
+        recommendation="Apply centella product after retinol to buffer irritation."
+    ))
+    
+    # Bakuchiol interactions
+    kg.add_interaction(Interaction(
+        ingredient_a="bakuchiol",
+        ingredient_b="retinol",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="Studies show combining them enhances anti-aging effects beyond either alone.",
+        recommendation="Can be layered together for experienced users, or use bakuchiol in AM and retinol in PM."
+    ))
+    
+    kg.add_interaction(Interaction(
+        ingredient_a="bakuchiol",
+        ingredient_b="vitamin_c",
+        interaction_type=InteractionType.SYNERGIZES,
+        severity=1,
+        explanation="Unlike retinol, bakuchiol is stable with vitamin C and doesn't cause pH conflicts.",
+        recommendation="Great daytime anti-aging combination."
     ))
     
     # ========== INTERACTIONS ==========

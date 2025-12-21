@@ -676,6 +676,26 @@ def create_skincare_knowledge_base() -> IngredientKnowledgeGraph:
         beginner_friendly=True,
         max_concentration="10% OTC, 15-20% prescription"
     ))
+
+    # ========== TEA TREE OIL ==========
+    kg.add_ingredient(Ingredient(
+        id="tea_tree",
+        name="Tea Tree Oil",
+        category=IngredientCategory.OIL,
+        aliases=["melaleuca", "tea tree"],
+        water_soluble=False,
+        time_of_day=TimeOfDay.PM_ONLY,  # Can be photosensitizing
+        application_order=5,
+        addresses_concerns=[SkinConcern.ACNE],
+        caution_skin_types=[SkinType.SENSITIVE, SkinType.DRY],
+        description="Natural antibacterial, good for spot treatment.",
+        how_it_works="Contains terpinen-4-ol which kills acne bacteria.",
+        usage_tips=[
+            "Always dilute - never use pure on skin",
+            "Best as spot treatment",
+        ],
+        beginner_friendly=True
+    ))    
     
     # ========== PEPTIDES ==========
     kg.add_ingredient(Ingredient(

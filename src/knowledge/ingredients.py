@@ -1292,11 +1292,10 @@ def create_skincare_knowledge_base() -> IngredientKnowledgeGraph:
     kg.add_interaction(Interaction(
         ingredient_a="retinol",
         ingredient_b="vitamin_c",
-        interaction_type=InteractionType.REQUIRES_WAITING,
-        severity=4,
-        wait_minutes=30,
-        explanation="Different optimal pH levels. Vitamin C needs acidic environment (pH 3), retinol works best at pH 5.5-6.",
-        recommendation="Use vitamin C in AM, retinol in PM. Or wait 30 minutes between applications."
+        interaction_type=InteractionType.CAUTION,
+        severity=6,
+        explanation="pH incompatibility and increased irritation risk. Vitamin C needs acidic pH (2.5-3.5), retinol works best at pH 5.5-6. Using together can reduce effectiveness of both and increase irritation.",
+        recommendation="Best practice: Use vitamin C in AM (antioxidant protection) and retinol in PM. If you must layer, wait 30+ minutes between applications and monitor for irritation."
     ))
     
     kg.add_interaction(Interaction(
@@ -1381,6 +1380,52 @@ def create_skincare_knowledge_base() -> IngredientKnowledgeGraph:
         severity=8,
         explanation="Benzoyl peroxide oxidizes vitamin C, rendering both less effective.",
         recommendation="Use at different times of day. Vitamin C in AM, BP in PM."
+    ))
+    
+    kg.add_interaction(Interaction(
+        ingredient_a="benzoyl_peroxide",
+        ingredient_b="glycolic_acid",
+        interaction_type=InteractionType.CONFLICTS,
+        severity=8,
+        explanation="Both are highly irritating. Combining causes severe dryness, peeling, and potential chemical burns.",
+        recommendation="Never use together. Alternate days or use BP for spot treatment only."
+    ))
+    
+    kg.add_interaction(Interaction(
+        ingredient_a="benzoyl_peroxide",
+        ingredient_b="lactic_acid",
+        interaction_type=InteractionType.CONFLICTS,
+        severity=7,
+        explanation="Both exfoliate and irritate. High risk of damaging skin barrier.",
+        recommendation="Use on completely separate days."
+    ))
+    
+    kg.add_interaction(Interaction(
+        ingredient_a="benzoyl_peroxide",
+        ingredient_b="salicylic_acid",
+        interaction_type=InteractionType.CAUTION,
+        severity=6,
+        explanation="Both target acne but together can over-dry skin. Some products combine them at low concentrations.",
+        recommendation="If combining, use very low concentrations and monitor for dryness. Many people alternate instead."
+    ))
+    
+    # AHA + Vitamin C interactions
+    kg.add_interaction(Interaction(
+        ingredient_a="glycolic_acid",
+        ingredient_b="vitamin_c",
+        interaction_type=InteractionType.CAUTION,
+        severity=5,
+        explanation="Both are acidic (pH 3-4). Layering can increase irritation without added benefit since both exfoliate/brighten.",
+        recommendation="Use at different times - Vitamin C in AM for antioxidant protection, glycolic in PM for exfoliation."
+    ))
+    
+    kg.add_interaction(Interaction(
+        ingredient_a="lactic_acid",
+        ingredient_b="vitamin_c",
+        interaction_type=InteractionType.CAUTION,
+        severity=4,
+        explanation="Both are acidic. While lactic is gentler, layering multiple acids increases irritation risk.",
+        recommendation="Separate into AM/PM routine. Vitamin C morning, lactic acid evening."
     ))
     
     # Peptide interactions

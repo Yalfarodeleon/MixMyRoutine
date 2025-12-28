@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Optional
 
-from knowledge.ingredients import (
+from app.core.knowledge.ingredients import (
     IngredientKnowledgeGraph,
     Ingredient,
     TimeOfDay,

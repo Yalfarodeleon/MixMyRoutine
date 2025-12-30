@@ -42,7 +42,7 @@ import type {
  * - Easier configuration
  */
 const api = axios.create({
-  baseURL: '/api/v1',  // Vite proxies this to localhost:8000
+  baseURL: 'http://localhost:8000/api/v1',  // Vite proxies this to localhost:8000
   headers: {
     'Content-Type': 'application/json',
   },

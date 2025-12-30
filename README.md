@@ -1,6 +1,6 @@
-# 🧴 Skincare Ingredient Advisor
+# 🧴 MixMyRoutine
 
-An intelligent skincare routine builder that uses principles of **Knowledge-Based AI** to analyze ingredient compatibility, detect conflicts, and provide personalized recommendations.
+An intelligent skincare routine builder that uses **Knowledge-Based AI** to analyze ingredient compatibility, detect conflicts, and provide personalized recommendations.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.11+-green.svg)
@@ -29,7 +29,7 @@ An intelligent skincare routine builder that uses principles of **Knowledge-Base
 
 Many skincare enthusiasts struggle to know which ingredients can be safely combined. Mixing incompatible ingredients like **Retinol + AHAs** or **Benzoyl Peroxide + Vitamin C** can cause irritation, reduced effectiveness, or skin damage.
 
-This application solves that problem by:
+**MixMyRoutine** solves that problem by:
 - ✅ Checking ingredient compatibility in real-time
 - ✅ Explaining *why* certain combinations are problematic
 - ✅ Building optimized routines with proper product ordering
@@ -78,7 +78,6 @@ This application solves that problem by:
 | **Docker** | Containerization |
 | **docker-compose** | Multi-container orchestration |
 | **GitHub Actions** | CI/CD pipeline |
-| **Vercel / Railway** | Deployment (planned) |
 
 ---
 
@@ -118,11 +117,6 @@ This application solves that problem by:
 │  │  │    Graph     │  │   Builder    │  │    Agent     │   │    │
 │  │  │  (NetworkX)  │  │    (CSP)     │  │    (NLU)     │   │    │
 │  │  └──────────────┘  └──────────────┘  └──────────────┘   │    │
-│  └─────────────────────────────┬───────────────────────────┘    │
-│                                │                                │
-│  ┌─────────────────────────────▼───────────────────────────┐    │
-│  │                    DATA Layer                           │    │
-│  │           SQLite / PostgreSQL (SQLAlchemy)              │    │
 │  └─────────────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -143,7 +137,6 @@ class Ingredient:
     category: IngredientCategory
     optimal_ph: tuple[float, float]
     addresses_concerns: list[SkinConcern]
-    # ... more slots
 ```
 
 ### 2. Semantic Networks
@@ -151,25 +144,16 @@ Ingredients and their interactions form a **graph** where:
 - **Nodes** = Ingredients
 - **Edges** = Interactions (conflicts, synergies, etc.)
 
-```python
-# Using NetworkX to represent relationships
-self.graph.add_edge("retinol", "glycolic_acid", 
-                    interaction_type=InteractionType.CONFLICTS)
-```
-
 ### 3. Constraint Satisfaction
 Routine building is a **CSP** where:
 - **Variables** = Products to apply
 - **Constraints** = No conflicts, correct order, proper timing
 
 ### 4. Case-Based Reasoning
-Recommendations based on similar skin profiles:
-- *"Users with oily, acne-prone skin often use salicylic acid + niacinamide"*
+Recommendations based on similar skin profiles.
 
 ### 5. Diagnostic Reasoning
-Maps symptoms (skin concerns) → solutions (ingredients):
-- Acne → Salicylic Acid, Benzoyl Peroxide, Niacinamide
-- Aging → Retinol, Vitamin C, Peptides
+Maps symptoms (skin concerns) → solutions (ingredients).
 
 ---
 
@@ -182,16 +166,9 @@ Maps symptoms (skin concerns) → solutions (ingredients):
 
 ### Option 1: Docker (Recommended)
 ```bash
-# Clone the repository
-git clone https://github.com/YOUR_USERNAME/skincare-advisor.git
-cd skincare-advisor
-
-# Start all services
+git clone https://github.com/YOUR_USERNAME/mixmyroutine.git
+cd mixmyroutine
 docker-compose up --build
-
-# Frontend: http://localhost:3000
-# Backend:  http://localhost:8000
-# API Docs: http://localhost:8000/docs
 ```
 
 ### Option 2: Manual Setup
@@ -212,22 +189,11 @@ npm install
 npm run dev
 ```
 
-### Running Tests
-```bash
-# Backend tests
-cd backend
-pytest -v
-
-# Frontend tests
-cd frontend
-npm test
-```
-
 ---
 
 ## API Documentation
 
-Once the backend is running, visit `http://localhost:8000/docs` for interactive Swagger documentation.
+Visit `http://localhost:8000/docs` for interactive Swagger documentation.
 
 ### Key Endpoints
 
@@ -239,119 +205,31 @@ Once the backend is running, visit `http://localhost:8000/docs` for interactive 
 | `POST` | `/api/v1/routines/build` | Build optimized routine |
 | `POST` | `/api/v1/advisor/ask` | Ask a question |
 
-### Example Request
-```bash
-curl -X POST "http://localhost:8000/api/v1/ingredients/check" \
-  -H "Content-Type: application/json" \
-  -d '{"ingredients": ["retinol", "vitamin_c"]}'
-```
-
-### Example Response
-```json
-{
-  "is_compatible": false,
-  "conflicts": [],
-  "cautions": [
-    {
-      "ingredient_a": "Retinol",
-      "ingredient_b": "Vitamin C (L-Ascorbic Acid)",
-      "severity": 6,
-      "explanation": "pH incompatibility and increased irritation risk...",
-      "recommendation": "Use vitamin C in AM and retinol in PM..."
-    }
-  ],
-  "synergies": []
-}
-```
-
 ---
 
 ## Project Structure
 
 ```
-skincare-advisor/
-│
+mixmyroutine/
 ├── backend/                    # Python FastAPI
 │   ├── app/
-│   │   ├── api/                # REST endpoints
-│   │   │   ├── v1/
-│   │   │   │   ├── ingredients.py
-│   │   │   │   ├── routines.py
-│   │   │   │   └── advisor.py
-│   │   │   └── deps.py         # Dependencies
-│   │   ├── core/               # KBAI business logic
-│   │   │   ├── knowledge/      # Knowledge graph
-│   │   │   ├── routines/       # Routine builder
-│   │   │   └── agent/          # NL advisor
-│   │   ├── db/                 # Database models
-│   │   ├── schemas/            # Pydantic models
-│   │   └── main.py             # App entry point
-│   ├── tests/
-│   ├── requirements.txt
-│   └── Dockerfile
+│   │   ├── api/v1/            # REST endpoints
+│   │   ├── core/              # KBAI business logic
+│   │   ├── schemas/           # Pydantic models
+│   │   └── main.py
+│   └── requirements.txt
 │
 ├── frontend/                   # React TypeScript
 │   ├── src/
-│   │   ├── components/         # Reusable UI components
-│   │   ├── pages/              # Page components
-│   │   ├── hooks/              # Custom React hooks
-│   │   ├── services/           # API client
-│   │   ├── types/              # TypeScript interfaces
+│   │   ├── pages/             # Page components
+│   │   ├── hooks/             # React Query hooks
+│   │   ├── services/          # API client
 │   │   └── App.tsx
-│   ├── package.json
-│   ├── tailwind.config.js
-│   └── Dockerfile
-│
-├── docs/                       # Documentation
-├── .github/
-│   └── workflows/              # CI/CD pipelines
-│       └── ci.yml
+│   └── package.json
 │
 ├── docker-compose.yml
-├── Makefile
 └── README.md
 ```
-
----
-
-## Roadmap
-
-### Phase 1: Core Migration ✅
-- [x] Knowledge graph with 26 ingredients
-- [x] 41 interaction rules
-- [x] Routine builder with constraint satisfaction
-- [x] NL advisor agent
-
-### Phase 2: API Layer (Current)
-- [ ] FastAPI backend setup
-- [ ] REST endpoints for all features
-- [ ] Pydantic request/response schemas
-- [ ] API tests with pytest
-
-### Phase 3: Frontend
-- [ ] React + TypeScript setup
-- [ ] Ingredient checker page
-- [ ] Routine builder page
-- [ ] Advisor chat interface
-- [ ] Responsive design with Tailwind
-
-### Phase 4: Database
-- [ ] SQLAlchemy models
-- [ ] User accounts
-- [ ] Saved routines
-- [ ] Product database
-
-### Phase 5: DevOps
-- [ ] Docker containerization
-- [ ] GitHub Actions CI/CD
-- [ ] Production deployment
-- [ ] Monitoring and logging
-
-### Phase 6: Enhancements
-- [ ] LLM integration for better NL responses
-- [ ] Barcode scanning for products
-- [ ] Community-submitted products
-- [ ] Mobile app (React Native)
 
 ---
 
@@ -368,14 +246,17 @@ skincare-advisor/
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
 ## Acknowledgments
 
 - Georgia Tech CS 7637 Knowledge-Based AI course
-- Skincare science resources: [LabMuffin](https://labmuffin.com/), [Paula's Choice](https://www.paulaschoice.com/ingredient-dictionary)
-- UI inspiration: Glossier, The Ordinary, CeraVe
+- Skincare science: [LabMuffin](https://labmuffin.com/), [Paula's Choice](https://www.paulaschoice.com/ingredient-dictionary)
 
 ---
+
+<p align="center">
+  <strong>MixMyRoutine</strong> — Mix smarter, glow better ✨
+</p>

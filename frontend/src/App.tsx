@@ -41,10 +41,10 @@ export default function App() {
         <div className="mb-8">
           <h1 className="text-xl font-bold bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent flex items-center gap-2">
             <Sparkles className="w-6 h-6 text-primary-500" />
-            Skincare Advisor
+            MixMyRoutine
           </h1>
           <p className="text-sm text-gray-500 mt-1">
-            Smart ingredient analysis
+            Mix smarter, glow better
           </p>
         </div>
 

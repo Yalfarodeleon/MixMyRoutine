@@ -7,7 +7,7 @@
 import { useState } from 'react';
 import { BookOpen, Search, ChevronDown, ChevronUp, Sun, Moon, Clock } from 'lucide-react';
 import { useIngredients, useIngredient } from '../hooks/useApi';
-import type { IngredientSummary, IngredientDetail } from '../types';
+import type { IngredientSummary } from '../types';
 
 export default function Library() {
   const [search, setSearch] = useState('');

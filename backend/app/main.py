@@ -37,7 +37,7 @@ from app.api.v1 import ingredients, routines, advisor
 # All the parameters here are for the auto-generated documentation
 
 app = FastAPI(
-    title="Skincare Advisor API",
+    title="MixMyRoutine API",
     description="""
     An intelligent skincare API that uses Knowledge-Based AI to:
     
@@ -138,7 +138,8 @@ async def root():
     For now, just know that FastAPI prefers async functions.
     """
     return {
-        "message": "Welcome to the Skincare Advisor API",
+        "message": "Welcome to the MixMyRoutine API",
+        "tagline": "Mix smarter, glow better✨",
         "docs": "/docs",
         "health": "/health"
     }

@@ -13,7 +13,7 @@ import os
 from app.core.knowledge.ingredients import create_skincare_knowledge_base
 from app.core.agent.advisor import SkincareAdvisor, QueryResult
 
-router = APIRouter(prefix="/advisor", tags=["advisor"])
+router = APIRouter(tags=["advisor"])
 
 # Initialize knowledge base and advisor
 kb = create_skincare_knowledge_base()

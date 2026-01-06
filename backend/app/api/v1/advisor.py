@@ -1,131 +1,113 @@
 """
-Advisor API Router
+Advisor API Endpoint with LLM Support
 
-This handles natural language questions about skincare.
-The core logic uses pattern matching and knowledge retrieval.
+This endpoint uses Claude API for intelligent responses,
+falling back to rule-based answers if no API key is set.
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel, Field
 from typing import Optional
+import os
 
-from app.schemas.models import (
-    AdvisorQuestionRequest,
-    AdvisorResponse,
-    SkinProfileRequest
+from app.core.knowledge.ingredients import create_skincare_knowledge_base
+from app.core.agent.advisor import SkincareAdvisor, QueryResult
+
+router = APIRouter(prefix="/advisor", tags=["advisor"])
+
+# Initialize knowledge base and advisor
+kb = create_skincare_knowledge_base()
+advisor = SkincareAdvisor(
+    knowledge_graph=kb,
+    api_key=os.getenv("ANTHROPIC_API_KEY")
 )
 
-from app.core.knowledge.ingredients import (
-    create_skincare_knowledge_base,
-    IngredientKnowledgeGraph,
-    SkinProfile,
-    SkinType,
-    SkinConcern
-)
-from app.core.agent.advisor import SkincareAdvisor
 
-router = APIRouter()
-
-# Module-level instances (use dependency injection in production)
-_knowledge_graph: Optional[IngredientKnowledgeGraph] = None
-_advisor: Optional[SkincareAdvisor] = None
+class AdvisorQuestionRequest(BaseModel):
+    """Request to ask the advisor a question."""
+    question: str = Field(..., min_length=3, max_length=500, description="Your skincare question")
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "question": "Can I use retinol with vitamin C?"
+            }
+        }
 
 
-def get_knowledge_graph() -> IngredientKnowledgeGraph:
-    global _knowledge_graph
-    if _knowledge_graph is None:
-        _knowledge_graph = create_skincare_knowledge_base()
-    return _knowledge_graph
-
-
-def get_advisor() -> SkincareAdvisor:
-    global _advisor
-    if _advisor is None:
-        _advisor = SkincareAdvisor(get_knowledge_graph())
-    return _advisor
+class AdvisorResponse(BaseModel):
+    """Response from the advisor."""
+    answer: str
+    confidence: float = Field(..., ge=0, le=1)
+    sources: list[str] = []
+    follow_up_questions: list[str] = []
+    llm_powered: bool = False  # Whether response used Claude API
 
 
 @router.post("/ask", response_model=AdvisorResponse)
 async def ask_advisor(request: AdvisorQuestionRequest):
     """
-    Ask a skincare question in natural language.
+    Ask the skincare advisor a question.
     
-    Examples:
+    The advisor uses:
+    1. Knowledge Graph with 26 ingredients and 41 interactions
+    2. Claude API for natural, intelligent responses (if API key is set)
+    
+    Example questions:
     - "Can I use retinol with vitamin C?"
     - "What should I use for acne?"
+    - "What is niacinamide?"
     - "What order should I apply my products?"
-    - "Is niacinamide good for oily skin?"
-    
-    KBAI CONCEPTS USED:
-    -------------------
-    
-    1. NATURAL LANGUAGE UNDERSTANDING
-       The advisor classifies questions into types:
-       - Compatibility questions ("Can I use X with Y?")
-       - Ingredient info questions ("What is X?")
-       - Concern-based questions ("What should I use for acne?")
-       - Routine questions ("What order should I apply?")
-    
-    2. KNOWLEDGE RETRIEVAL
-       Based on the question type, it retrieves relevant knowledge:
-       - Compatibility → Look up interaction between ingredients
-       - Ingredient info → Retrieve ingredient frame
-       - Concern-based → Map concern to recommended ingredients
-    
-    3. DIAGNOSTIC REASONING
-       For concern-based questions, it maps:
-       Symptom (acne) → Cause (excess sebum, bacteria) → Solution (salicylic acid, niacinamide)
     """
-    advisor = get_advisor()
-    
-    # Convert profile if provided
-    profile = None
-    if request.profile:
-        profile = SkinProfile(
-            skin_type=SkinType(request.profile.skin_type.value),
-            concerns=[SkinConcern(c.value) for c in request.profile.concerns]
+    try:
+        result: QueryResult = advisor.ask(request.question)
+        
+        return AdvisorResponse(
+            answer=result.answer,
+            confidence=result.confidence,
+            sources=result.sources,
+            follow_up_questions=result.follow_up_questions,
+            llm_powered=advisor.client is not None
         )
-    
-    # Ask the advisor (this is your KBAI logic!)
-    result = advisor.ask(request.question, profile)
-    
-    return AdvisorResponse(
-        answer=result.answer,
-        confidence=result.confidence,
-        query_type=result.query_type.value if hasattr(result.query_type, 'value') else str(result.query_type),
-        sources=result.sources,
-        follow_up_questions=result.follow_up_questions
-    )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing question: {str(e)}")
 
 
 @router.get("/example-questions")
 async def get_example_questions():
-    """
-    Get example questions to help users understand what they can ask.
-    
-    This is a UX feature - helping users discover the system's capabilities.
-    """
+    """Get example questions to help users get started."""
     return {
         "compatibility": [
             "Can I use retinol with vitamin C?",
-            "Is niacinamide safe with AHA?",
-            "Can I mix benzoyl peroxide and salicylic acid?",
-            "What happens if I use glycolic acid with retinol?"
+            "Can I mix niacinamide and vitamin C?",
+            "Is it safe to use AHA with retinol?",
         ],
         "ingredient_info": [
-            "What is retinol?",
-            "How does niacinamide work?",
+            "What is niacinamide?",
+            "What does retinol do?",
             "Tell me about hyaluronic acid",
-            "What does vitamin C do for skin?"
         ],
-        "recommendations": [
+        "concern_based": [
             "What should I use for acne?",
-            "What's good for anti-aging?",
-            "What ingredients help with hyperpigmentation?",
-            "What's best for dry skin?"
+            "What ingredients help with aging?",
+            "What's good for dry skin?",
         ],
         "routine": [
-            "What order should I apply my products?",
-            "Should I use vitamin C in the morning or night?",
-            "How long should I wait between products?"
+            "What order should I apply vitamin C and niacinamide?",
+            "Should I use retinol in the morning or night?",
+            "How do I layer my skincare?",
         ]
+    }
+
+
+@router.get("/status")
+async def get_advisor_status():
+    """Check if the advisor is using LLM or rule-based mode."""
+    return {
+        "llm_enabled": advisor.client is not None,
+        "model": "claude-sonnet-4-20250514" if advisor.client else None,
+        "knowledge_base": {
+            "ingredients": len(kb.ingredients),
+            "interactions": kb.graph.number_of_edges()
+        }
     }

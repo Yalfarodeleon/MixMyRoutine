@@ -21,6 +21,7 @@ import IngredientChecker from './pages/IngredientChecker';
 import RoutineBuilder from './pages/RoutineBuilder';
 import Advisor from './pages/Advisor';
 import Library from './pages/Library';
+import Home from './pages/Home';
 
 /**
  * Navigation items configuration
@@ -85,6 +86,7 @@ export default function App() {
           <Route path="/routine" element={<RoutineBuilder />} />
           <Route path="/advisor" element={<Advisor />} />
           <Route path="/library" element={<Library />} />
+          <Route path="/" element={<Home />} />
         </Routes>
       </main>
     </div>

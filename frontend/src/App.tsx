@@ -13,7 +13,6 @@ import {
   MessageCircle, 
   BookOpen,
   Sparkles,
-  Home as HomeIcon
 } from 'lucide-react';
 
 // Import pages

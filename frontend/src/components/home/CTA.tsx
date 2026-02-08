@@ -1,52 +1,43 @@
 /**
  * CTA Section
  * 
- * Final call-to-action to get users to try the app.
+ * Final call-to-action - different from Hero
  */
 
 import { Link } from 'react-router-dom';
-import { Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle } from 'lucide-react';
 
-export default function Hero() {
+export default function CTA() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary-600 to-primary-800 text-white">
-      <div className="max-w-6xl mx-auto px-6 py-24 text-center">
-        {/* Logo/Icon */}
-        <div className="flex justify-center mb-6">
-          <Sparkles className="w-16 h-16 text-primary-200" />
+    <section className="py-20 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800">
+      <div className="max-w-4xl mx-auto px-6 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+          Ready to Build Your Perfect Routine?
+        </h2>
+        
+        {/* Value props */}
+        <div className="flex flex-wrap justify-center gap-6 mb-8 text-primary-100">
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-5 h-5" />
+            <span>Free to use</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-5 h-5" />
+            <span>No account needed</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-5 h-5" />
+            <span>Science-backed data</span>
+          </div>
         </div>
         
-        {/* Main Headline */}
-        <h1 className="text-4xl md:text-6xl font-bold mb-6">
-          Mix Smarter, Glow Better
-        </h1>
-        
-        {/* Subheadline */}
-        <p className="text-xl md:text-2xl text-primary-100 mb-8 max-w-2xl mx-auto">
-          Check if your skincare ingredients work together. 
-          Powered by AI and backed by science.
-        </p>
-        
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link 
-            to="/checker" 
-            className="btn-primary text-lg px-8 py-3"
-          >
-            Try the Checker
-          </Link>
-          <Link 
-            to="/advisor" 
-            className="btn-secondary bg-white/10 border-white/20 text-white hover:bg-white/20 text-lg px-8 py-3"
-          >
-            Ask the Advisor
-          </Link>
-        </div>
-        
-        {/* Trust indicators */}
-        <p className="mt-12 text-primary-200 text-sm">
-          26 ingredients • 41 interaction rules • Built with KBAI
-        </p>
+        <Link 
+          to="/checker" 
+          className="inline-flex items-center gap-2 bg-white text-primary-700 font-semibold px-8 py-4 rounded-xl hover:bg-primary-50 hover:scale-105 transition-all duration-200 text-lg shadow-lg"
+        >
+          Start Checking Ingredients
+          <ArrowRight className="w-5 h-5" />
+        </Link>
       </div>
     </section>
   );

@@ -1,7 +1,11 @@
 /**
- * Ingredient Library Page
+ * Library.tsx
  * 
- * Browse and search all ingredients.
+ * Browse and learn about skincare ingredients with:
+ * - Search functionality
+ * - Category and concern filers
+ * - Expandable ingredient information
+ * - Detailed ingredient information
  */
 
 import { useState } from 'react';

@@ -38,14 +38,21 @@ export default function App() {
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-gray-200 flex flex-col p-6 shadow-sm">
         {/* Logo - clickable to go Home */}
-        <Link to="/" className="mb-8">
-          <h1 className="text-xl font-bold bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent flex items-center gap-2">
-            <Sparkles className="w-6 h-6 text-primary-500" />
-            MixMyRoutine
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Mix smarter, glow better
-          </p>
+        <Link to="/" className="mb-8 block group">
+          <div className="flex flex-col items-center">
+            {/* Icon */}
+            <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-lg">
+              <Sparkles className="w-6 h-6 text-white" />
+            </div>
+            {/* Brand Name */}
+            <h1 className="text-lg font-bold bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent text-center leading-tight">
+              MixMyRoutine
+            </h1>
+            {/* Tagline */}
+            <p className="text-xs text-gray-500 text-center mt-1">
+              Mix smarter, glow better
+            </p>
+          </div>
         </Link>
 
         {/* Navigation */}
@@ -67,19 +74,10 @@ export default function App() {
             </NavLink>
           ))}
         </nav>
-
-        {/* Footer */}
-        <div className="mt-auto pt-6 border-t border-gray-100">
-          <p className="text-xs text-gray-400 text-center">
-            Built with KBAI + HCI
-            <br />
-            26 ingredients • 41 interactions
-          </p>
-        </div>
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 p-8 overflow-y-auto">
+      <main className="flex-1 bg-gray-50 p-8 overflow-y-auto">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/checker" element={<IngredientChecker />} />

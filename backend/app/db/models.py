@@ -16,6 +16,7 @@ HOW IT MAPS:
     Class Instance   ->  Row
 """
 
+
 import uuid
 from datetime import datetime, timezone
 from sqlalchemy import Column, String, DateTime, ForeignKey, JSON, Boolean
@@ -61,5 +62,45 @@ class User(Base):
         nullable=False,
         index=True  # Index = faster lookup by email
     )
+
+    # Hashed password - NEVER store plain text passwords!
+    hashed_password = Column(String(255), nullable=False)
+
+    # Timestamps
+    created_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False
+    )
+    updated_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
+        nullable=False
+    )
+
+    # Soft delete flag (deactivate instead of deleting)
+    is_active = Column(Boolean, default=True, nullable=False)
+
+    # ---------------------------------------------------------------------------
+    # RELATIONSHIP: User has one Profile
+    # ---------------------------------------------------------------------------
+    # This creates a virtual link between User and UserProfile.
+    # It doesn't add a column - it lets you do: user.profile
+    #
+    # back_populates: Creates a two-way link (profile.user works too)
+    # uselist=False:  One-to-one relationship (not one-to-many)
+    # cascade:        If user is deleted, delete their profile too
+
+    profile = relationship(
+        "UserProfile",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
+
+    def __repr__(self):
+        return f"<User {self.email}"
+    
 
     

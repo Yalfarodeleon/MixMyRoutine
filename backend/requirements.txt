@@ -8,8 +8,16 @@ pydantic>=2.0.0
 # Knowledge graph
 networkx>=3.0
 
-# Database (for later)
+# Database
 sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0    # PostgreSQL adapter for Python
+alembic>=1.13.0            # Database migrations (for later)
+
+# Authentication
+python-jose[cryptography]>=3.3.0  # JWT token creation & verification
+passlib[bcrypt]>=1.7.0             # Password hashing with bcrypt
+bcrypt==4.0.1                      # Pin bcrypt for passlib compatibility
+pydantic[email]>=2.0.0             # Email validation (EmailStr)
 
 # Testing
 pytest>=7.4.0

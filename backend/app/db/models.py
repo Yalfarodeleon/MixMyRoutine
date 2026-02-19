@@ -103,4 +103,59 @@ class User(Base):
         return f"<User {self.email}"
     
 
-    
+# =============================================================================
+# USER PROFILE MODEL
+# =============================================================================
+# Stores the user's skincare profile (skin type, concerns, favorites).
+# Seperated from User to keep auth data and profile clean.
+
+class UserProfile(Base):
+    """
+    Stores a user's skincare preferences.
+
+    TABLE: user_profiles
+
+    WHY SEPERATE FROM USER?
+    Single Resposibility: User table handles auth (email, password).
+    Profile table handles skincare data. This is cleaner and lets you
+    update profile data without touching auth data.
+    """
+    __tablename__ = "user_profiles"
+
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4
+    )
+
+    # Foreign key linking this profile to a user
+    # ForeignKey("users.id") means this column references users.id
+    user_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        unique=True,    # One profile per user
+        nullable=False
+    )
+
+    # Skincare data
+    skin_type = Column(String(50), nullable=True)
+
+    #JSON type - stores a list of strings as JSON
+    # e.g., ["acne", "dryness", "aging"]
+    concerns = Column(JSON, default=list)
+
+    # Favorite ingredient IDs
+    # e.g., ["niacinamide", "hyaluronic_acid", "vitamin_c"]
+    favorite_ingredients = Column(JSON, default=list)
+
+    updated_at = Column(
+        DateTime(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc)
+    )
+
+    # Back-reference to user
+    user = relationship("User", back_populates="profile")
+
+    def __repr__(self):
+        return f"<UserProfile user_id={self.user_id} skin_type={self.skin_type}>"

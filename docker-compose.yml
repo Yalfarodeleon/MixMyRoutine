@@ -2,41 +2,71 @@
 # DOCKER COMPOSE
 # =============================================================================
 #
-# WHAT IS DOCKER COMPOSE?
-# A tool for defining and running multi-container applications.
-# Instead of running docker commands manually, you define everything here.
-#
 # ONE COMMAND TO RULE THEM ALL:
 #   docker-compose up --build
 #
-# This starts both frontend and backend, connected together.
+# This starts PostgreSQL, backend, and frontend — all connected together.
 # =============================================================================
 
 services:
   # ---------------------------------------------------------------------------
+  # POSTGRESQL DATABASE
+  # ---------------------------------------------------------------------------
+  # PostgreSQL is a production-grade relational database.
+  # This runs it in a Docker container so you don't need to install it locally.
+  db:
+    image: postgres:16-alpine  # Alpine = smaller image size
+    container_name: mixmyroutine-db
+    restart: unless-stopped
+    
+    # Environment variables configure the database
+    environment:
+      POSTGRES_USER: mixmyroutine
+      POSTGRES_PASSWORD: mixmyroutine_secret
+      POSTGRES_DB: mixmyroutine
+    
+    # Expose PostgreSQL port to host for debugging tools like pgAdmin
+    ports:
+      - "5432:5432"
+    
+    # VOLUMES: Persist data even if the container is destroyed
+    # Without this, you'd lose all data every time you run docker-compose down
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    
+    # Health check - ensures PostgreSQL is ready before backend connects
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mixmyroutine"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
   # BACKEND SERVICE
   # ---------------------------------------------------------------------------
   backend:
-    # Build from the backend folder
     build:
       context: ./backend
       dockerfile: Dockerfile
     
-    # Name the container (easier to find in docker ps)
     container_name: mixmyroutine-backend
-    
-    # Restart if it crashes
     restart: unless-stopped
     
-    # Expose port 8000 to other containers AND to host machine
     ports:
       - "8000:8000"
     
-    # Environment variables
+    # DATABASE_URL uses "db" as host because that's the service name above.
+    # Docker's internal DNS resolves "db" to the PostgreSQL container's IP.
     environment:
       - ENVIRONMENT=production
+      - DATABASE_URL=postgresql://mixmyroutine:mixmyroutine_secret@db:5432/mixmyroutine
+      - SECRET_KEY=change-this-to-a-real-secret-in-production
     
-    # Health check - Docker will monitor if the app is running
+    # Wait for PostgreSQL to be healthy before starting
+    depends_on:
+      db:
+        condition: service_healthy
+    
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -48,7 +78,6 @@ services:
   # FRONTEND SERVICE
   # ---------------------------------------------------------------------------
   frontend:
-    # Build from the frontend folder
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -56,12 +85,9 @@ services:
     container_name: mixmyroutine-frontend
     restart: unless-stopped
     
-    # Expose port 80 (nginx) as port 3000 on host
-    # So you still access it at http://localhost:3000
     ports:
       - "3000:80"
     
-    # Wait for backend to be healthy before starting
     depends_on:
       backend:
         condition: service_started
@@ -70,20 +96,8 @@ services:
       - NODE_ENV=production
 
 # =============================================================================
-# HOW IT WORKS
+# VOLUMES
 # =============================================================================
-#
-# When you run: docker-compose up --build
-#
-# 1. Docker builds the backend image from backend/Dockerfile
-# 2. Docker builds the frontend image from frontend/Dockerfile
-# 3. Docker creates a network connecting both containers
-# 4. Backend starts on port 8000
-# 5. Frontend starts on port 3000 (nginx on port 80 inside container)
-# 6. nginx proxies /api/* requests to http://backend:8000
-#
-# The containers can talk to each other by name:
-# - Frontend calls "http://backend:8000" (Docker DNS)
-# - This only works INSIDE Docker network
-# - From your browser, you still use localhost:8000 and localhost:3000
-# =============================================================================
+# Named volumes persist data between container restarts.
+volumes:
+  postgres_data:

@@ -143,3 +143,47 @@ export interface AdvisorResponse {
   sources: string[];
   follow_up_questions: string[];
 }
+
+
+// =============================================================================
+// AUTH TYPES
+// =============================================================================
+
+export interface User {
+  id: string;
+  email: string;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface UserProfile {
+  skin_type: string | null;
+  concerns: string[];
+  favorite_ingredients: string[];
+}
+
+export interface UserWithProfile extends User {
+  profile: UserProfile | null;
+}
+
+export interface TokenResponse {
+  access_token: string;
+  token_type: string;
+  user: User;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface ProfileUpdateRequest {
+  skin_type?: string;
+  concerns?: string[];
+  favorite_ingredients?: string[];
+}

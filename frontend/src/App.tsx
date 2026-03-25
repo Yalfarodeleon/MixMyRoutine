@@ -1,11 +1,10 @@
 /**
  * Main App Component
  * 
- * This sets up:
- * - AuthProvider for global auth state
- * - The layout (sidebar + main content)
- * - React Router for navigation
- * - Auth pages (Login, Register, Profile)
+ * Layout:
+ * - Left sidebar: Logo + navigation
+ * - Main area: Top bar (with user menu) + page content
+ * - Full-screen layout for login/register (no sidebar)
  */
 import { Routes, Route, NavLink, Link, useLocation } from 'react-router-dom';
 import { 
@@ -14,11 +13,13 @@ import {
   MessageCircle, 
   BookOpen,
   Sparkles,
-  LogIn,
 } from 'lucide-react';
 
 // Auth
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+
+// Components
+import UserMenu from './components/shared/UserMenu';
 
 // Import pages
 import IngredientChecker from './pages/IngredientChecker';
@@ -51,7 +52,7 @@ const fullScreenPages = ['/login', '/register'];
  */
 function AppContent() {
   const location = useLocation();
-  const { isAuthenticated, user, isLoading } = useAuth();
+  const { isLoading } = useAuth();
   const isFullScreen = fullScreenPages.includes(location.pathname);
 
   // Show spinner while checking auth status (prevents flash of wrong UI)
@@ -73,23 +74,20 @@ function AppContent() {
     );
   }
 
-  // Standard layout with sidebar
+  // Standard layout with sidebar + top bar
   return (
     <div className="min-h-screen flex">
-      {/* Sidebar */}
+      {/* ── Sidebar ── */}
       <aside className="w-64 bg-white border-r border-gray-200 flex flex-col p-6 shadow-sm">
         {/* Logo - clickable to go Home */}
         <Link to="/" className="mb-8 block group">
           <div className="flex flex-col items-center">
-            {/* Icon */}
             <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-lg">
               <Sparkles className="w-6 h-6 text-white" />
             </div>
-            {/* Brand Name */}
             <h1 className="text-lg font-bold bg-gradient-to-r from-primary-500 to-primary-700 bg-clip-text text-transparent text-center leading-tight">
               MixMyRoutine
             </h1>
-            {/* Tagline */}
             <p className="text-xs text-gray-500 text-center mt-1">
               Mix smarter, glow better
             </p>
@@ -115,56 +113,27 @@ function AppContent() {
             </NavLink>
           ))}
         </nav>
-
-        {/* Spacer pushes auth section to the bottom */}
-        <div className="flex-1" />
-
-        {/* Auth Section at bottom of sidebar */}
-        <div className="border-t border-gray-200 pt-4 mt-4">
-          {isAuthenticated ? (
-            <NavLink
-              to="/profile"
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-2.5 rounded-lg font-medium transition-all ${
-                  isActive
-                    ? 'bg-primary-50 text-primary-700'
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`
-              }
-            >
-              <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-xs font-bold">
-                  {user?.email?.charAt(0).toUpperCase()}
-                </span>
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-medium truncate">{user?.email}</p>
-                <p className="text-xs text-gray-400">View profile</p>
-              </div>
-            </NavLink>
-          ) : (
-            <Link
-              to="/login"
-              className="flex items-center gap-3 px-4 py-2.5 rounded-lg font-medium text-gray-600 hover:bg-gray-50 transition-all"
-            >
-              <LogIn className="w-5 h-5" />
-              Sign In
-            </Link>
-          )}
-        </div>
       </aside>
 
-      {/* Main content */}
-      <main className="flex-1 bg-gray-50 p-8 overflow-y-auto">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/checker" element={<IngredientChecker />} />
-          <Route path="/routine" element={<RoutineBuilder />} />
-          <Route path="/advisor" element={<Advisor />} />
-          <Route path="/library" element={<Library />} />
-          <Route path="/profile" element={<Profile />} />
-        </Routes>
-      </main>
+      {/* ── Main Content Area ── */}
+      <div className="flex-1 flex flex-col min-h-screen">
+        {/* Top Bar */}
+        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-end px-8 flex-shrink-0">
+          <UserMenu />
+        </header>
+
+        {/* Page Content */}
+        <main className="flex-1 bg-gray-50 p-8 overflow-y-auto">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/checker" element={<IngredientChecker />} />
+            <Route path="/routine" element={<RoutineBuilder />} />
+            <Route path="/advisor" element={<Advisor />} />
+            <Route path="/library" element={<Library />} />
+            <Route path="/profile" element={<Profile />} />
+          </Routes>
+        </main>
+      </div>
     </div>
   );
 }

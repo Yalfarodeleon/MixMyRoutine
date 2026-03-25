@@ -2,9 +2,12 @@
  * Profile Page
  * 
  * Lets authenticated users view and edit their skincare profile:
+ * - Profile header with avatar and account info
  * - Skin type selection
  * - Skin concerns (multi-select)
  * - Favorite ingredients
+ * 
+ * Sign Out lives in the UserMenu (top-right dropdown), not here.
  */
 
 import { useState, useEffect } from 'react';
@@ -12,12 +15,13 @@ import { useNavigate } from 'react-router-dom';
 import {
   User as UserIcon,
   Save,
-  LogOut,
   Droplets,
   AlertCircle,
   Check,
   Heart,
   X,
+  Calendar,
+  Search,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { authApi, ingredientsApi } from '../services/api';
@@ -53,7 +57,7 @@ const CONCERNS = [
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { user, profile, logout, refreshProfile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
 
   // Form state
   const [skinType, setSkinType] = useState<string>('');
@@ -128,29 +132,40 @@ export default function Profile() {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  // Format the "Member since" date
+  const memberSince = user.created_at
+    ? new Date(user.created_at).toLocaleDateString('en-US', {
+        month: 'long',
+        year: 'numeric',
+      })
+    : null;
+
+  const initial = user.email.charAt(0).toUpperCase();
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Your Profile</h1>
-          <p className="text-gray-500 mt-1">{user.email}</p>
+      {/* ── Profile Header Card ── */}
+      <div className="bg-white rounded-2xl shadow-soft p-6">
+        <div className="flex items-center gap-4">
+          {/* Large Avatar */}
+          <div className="w-16 h-16 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+            <span className="text-white text-2xl font-bold">{initial}</span>
+          </div>
+
+          <div className="min-w-0">
+            <h1 className="text-xl font-bold text-gray-900">Your Profile</h1>
+            <p className="text-gray-500 text-sm truncate">{user.email}</p>
+            {memberSince && (
+              <p className="text-xs text-gray-400 flex items-center gap-1 mt-1">
+                <Calendar className="w-3 h-3" />
+                Member since {memberSince}
+              </p>
+            )}
+          </div>
         </div>
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all text-sm font-medium"
-        >
-          <LogOut className="w-4 h-4" />
-          Sign Out
-        </button>
       </div>
 
-      {/* Error / Success Messages */}
+      {/* ── Error / Success Messages ── */}
       {error && (
         <div className="flex items-center gap-2 bg-red-50 text-red-700 px-4 py-3 rounded-lg text-sm">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
@@ -164,7 +179,7 @@ export default function Profile() {
         </div>
       )}
 
-      {/* Skin Type */}
+      {/* ── Skin Type ── */}
       <div className="bg-white rounded-2xl shadow-soft p-6">
         <div className="flex items-center gap-2 mb-4">
           <Droplets className="w-5 h-5 text-primary-500" />
@@ -188,7 +203,7 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* Skin Concerns */}
+      {/* ── Skin Concerns ── */}
       <div className="bg-white rounded-2xl shadow-soft p-6">
         <div className="flex items-center gap-2 mb-4">
           <UserIcon className="w-5 h-5 text-primary-500" />
@@ -215,7 +230,7 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* Favorite Ingredients */}
+      {/* ── Favorite Ingredients ── */}
       <div className="bg-white rounded-2xl shadow-soft p-6">
         <div className="flex items-center gap-2 mb-4">
           <Heart className="w-5 h-5 text-primary-500" />
@@ -249,13 +264,16 @@ export default function Profile() {
         )}
 
         {/* Search & add */}
-        <input
-          type="text"
-          value={ingredientSearch}
-          onChange={(e) => setIngredientSearch(e.target.value)}
-          placeholder="Search ingredients..."
-          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all text-sm mb-3"
-        />
+        <div className="relative mb-3">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <input
+            type="text"
+            value={ingredientSearch}
+            onChange={(e) => setIngredientSearch(e.target.value)}
+            placeholder="Search ingredients..."
+            className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all text-sm"
+          />
+        </div>
 
         <div className="max-h-48 overflow-y-auto rounded-lg border border-gray-200">
           {filteredIngredients.length === 0 ? (
@@ -283,7 +301,7 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* Save Button */}
+      {/* ── Save Button ── */}
       <button
         onClick={handleSave}
         disabled={isSaving}
